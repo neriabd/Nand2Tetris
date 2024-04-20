@@ -1,0 +1,109 @@
+// This file is part of nand2tetris, as taught in The Hebrew University,
+// and was written by Aviv Yaish, and is published under the Creative 
+// Common Attribution-NonCommercial-ShareAlike 3.0 Unported License 
+// https://creativecommons.org/licenses/by-nc-sa/3.0/
+
+// This chip is an extension of the regular CPU that uses the extended ALU.
+// If instruction[15]==0 or (instruction[14]==1 and instruction[13]==1),
+// the CpuMul behaves exactly the same as the regular CPU.
+// If instruction[15]==1 and instruction[14]==0 the chip will behave as follows:
+//  Instruction  | 12 | 11 | 10 |
+// ______________________________
+// dest=D<<;jump | 0  | 1  | 1  |
+// dest=A<<;jump | 0  | 1  | 0  |
+// dest=M<<;jump | 1  | 1  | 0  |
+// dest=D>>;jump | 0  | 0  | 1  |
+// dest=A>>;jump | 0  | 0  | 0  |
+// dest=M>>;jump | 1  | 0  | 0  |
+
+CHIP CpuMul {
+    IN  inM[16],         // M value input  (M = contents of RAM[A])
+        instruction[16], // Instruction for execution
+        reset;           // Signals whether to re-start the current
+                         // program (reset=1) or continue executing
+                         // the current program (reset=0).
+    OUT outM[16],        // M value output
+        writeM,          // Write into M? 
+        addressM[15],    // Address in data memory (of M)
+        pc[15];          // address of next instruction
+    
+    PARTS:
+
+    
+	Not(in=instruction[15], out=out2);
+	Mux16(a=out1, b=instruction, sel=out2, out=out3);
+	
+	// load == 1 if (Ainstruction or (Cinstruction and intrutction[5] == 1))
+	And(a=instruction[5], b=instruction[15], out=out4);
+	Or(a=out2, b=out4, out=out5); // out2 - Ainstruction
+	ARegister(in=out3, load=out5, out=out6, out[0..14]=addressM);
+	
+	And(a=instruction[12], b=instruction[15], out=out7);
+	Mux16(a=out6, b=inM, sel=out7, out=out8);
+	
+	Not(in=instruction[14], out=outnot1); // check if its a shift
+	And(a=instruction[15], b=outnot1, out=outand1);
+	Not(in=outand1, out=outnot2);
+       ExtendAlu(x=out9, y=out8, instruction[7]=true, instruction[8]=outnot2, instruction[0..6]=instruction[6..12], out=out1, out=outM, zr=out10, ng=out11);
+
+	And(a=instruction[4],b=instruction[15],out=load1);
+	DRegister(in=out1, load=load1, out=out9);
+	
+	And(a=instruction[15], b=instruction[3], out=writeM);
+	
+	// zr=out10, ng=out11
+	
+	Not(in=instruction[2], out=out12);
+	Not(in=instruction[1], out=out13);
+	Not(in=instruction[0], out=out14);
+	Not(in=out10, out=out15);
+	Not(in=out11, out=out16);
+	
+	// JGT
+	And(a=out12, b=out13, out=out17);
+	And(a=out17, b=instruction[0], out=out18);
+	And(a=out15, b=out16, out=out19);
+	And(a=out18, b=out19, out=out20);
+	
+	// JEQ
+	And(a=out12, b=instruction[1], out=out21);
+	And(a=out21, b=out14, out=out22);
+	And(a=out22, b=out10, out=out23);
+	
+	// JGE
+	And(a=out12, b=instruction[1], out=out24);
+	And(a=out24, b=instruction[0], out=out25);
+	And(a=out25, b=out16, out=out26);
+	
+	// JLT
+	And(a=instruction[2], b=out13, out=out27);
+	And(a=out27, b=out14, out=out28);
+	And(a=out28, b=out11, out=out29);
+	
+	// JNE
+	And(a=instruction[2], b=out13, out=out30);
+	And(a=out30, b=instruction[0], out=out31);
+	And(a=out31, b=out15, out=out32);
+	
+	// JLE
+	And(a=instruction[2], b=instruction[1], out=out33);
+	And(a=out33, b=out14, out=out34);
+	Or(a=out10, b=out11, out=out35);
+	And(a=out34, b=out35, out=out36);
+	
+	// JMP
+	And(a=out33, b=instruction[0], out=out37);
+	
+	Or(a=false, b=out20, out=out38);
+      Or(a=out23, b=out26, out=out39);
+      Or(a=out29, b=out32, out=out40);
+      Or(a=out36, b=out37, out=out41);
+      Or(a=out38, b=out39, out=out42);
+      Or(a=out40, b=out41, out=out43);
+      Or(a=out42, b=out43, out=out44);
+	
+	And(a=instruction[15], b=out44, out=out45);
+	PC(in=out6, load=out45, inc=true, reset=reset, out[0..14]=pc);
+
+
+} 

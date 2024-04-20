@@ -1,0 +1,122 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/05/CPU.hdl
+
+/**
+ * The Hack CPU (Central Processing unit), consisting of an ALU,
+ * two registers named A and D, and a program counter named PC.
+ * The CPU is designed to fetch and execute instructions written in 
+ * the Hack machine language. In particular, functions as follows:
+ * Executes the inputted instruction according to the Hack machine 
+ * language specification. The D and A in the language specification
+ * refer to CPU-resident registers, while M refers to the external
+ * memory location addressed by A, i.e. to Memory[A]. The inM input 
+ * holds the value of this location. If the current instruction needs 
+ * to write a value to M, the value is placed in outM, the address 
+ * of the target location is placed in the addressM output, and the 
+ * writeM control bit is asserted. (When writeM==0, any value may 
+ * appear in outM). The outM and writeM outputs are combinational: 
+ * they are affected instantaneously by the execution of the current 
+ * instruction. The addressM and pc outputs are clocked: although they 
+ * are affected by the execution of the current instruction, they commit 
+ * to their new values only in the next time step. If reset==1 then the 
+ * CPU jumps to address 0 (i.e. pc is set to 0 in next time step) rather 
+ * than to the address resulting from executing the current instruction. 
+ */
+
+CHIP CPU {
+
+    IN  inM[16],         // M value input  (M = contents of RAM[A])
+        instruction[16], // Instruction for execution
+        reset;           // Signals whether to re-start the current
+                         // program (reset==1) or continue executing
+                         // the current program (reset==0).
+
+    OUT outM[16],        // M value output
+        writeM,          // Write to M? 
+        addressM[15],    // Address in data memory (of M)
+        pc[15];          // address of next instruction
+
+    PARTS:
+	
+	Not(in=instruction[15], out=out2);
+	Mux16(a=out1, b=instruction, sel=out2, out=out3);
+	
+	// load == 1 if (Ainstruction or (Cinstruction and intrutction[5] == 1))
+	And(a=instruction[5], b=instruction[15], out=out4);
+	Or(a=out2, b=out4, out=out5); // out2 - Ainstruction
+	ARegister(in=out3, load=out5, out=out6, out[0..14]=addressM);
+	
+	
+	And(a=instruction[12], b=instruction[15], out=out7);
+	Mux16(a=out6, b=inM, sel=out7, out=out8);
+	
+	And(a=instruction[4],b=instruction[15],out=load1);
+	DRegister(in=out1, load=load1, out=out9);
+	ALU(x=out9, y=out8, zx=instruction[11],nx=instruction[10],zy=instruction[9],ny=instruction[8],f=instruction[7],no=instruction[6],out=out1, out=outM, zr=out10, ng=out11);
+	
+	And(a=instruction[15], b=instruction[3], out=writeM);
+	
+	// zr=out10, ng=out11
+	
+	Not(in=instruction[2], out=out12);
+	Not(in=instruction[1], out=out13);
+	Not(in=instruction[0], out=out14);
+	Not(in=out10, out=out15);
+	Not(in=out11, out=out16);
+	
+	// JGT
+	And(a=out12, b=out13, out=out17);
+	And(a=out17, b=instruction[0], out=out18);
+	And(a=out15, b=out16, out=out19);
+	And(a=out18, b=out19, out=out20);
+	
+	// JEQ
+	And(a=out12, b=instruction[1], out=out21);
+	And(a=out21, b=out14, out=out22);
+	And(a=out22, b=out10, out=out23);
+	
+	// JGE
+	And(a=out12, b=instruction[1], out=out24);
+	And(a=out24, b=instruction[0], out=out25);
+	And(a=out25, b=out16, out=out26);
+	
+	// JLT
+	And(a=instruction[2], b=out13, out=out27);
+	And(a=out27, b=out14, out=out28);
+	And(a=out28, b=out11, out=out29);
+	
+	// JNE
+	And(a=instruction[2], b=out13, out=out30);
+	And(a=out30, b=instruction[0], out=out31);
+	And(a=out31, b=out15, out=out32);
+	
+	// JLE
+	And(a=instruction[2], b=instruction[1], out=out33);
+	And(a=out33, b=out14, out=out34);
+	Or(a=out10, b=out11, out=out35);
+	And(a=out34, b=out35, out=out36);
+	
+	// JMP
+	And(a=out33, b=instruction[0], out=out37);
+	
+	Or(a=false, b=out20, out=out38);
+      Or(a=out23, b=out26, out=out39);
+      Or(a=out29, b=out32, out=out40);
+      Or(a=out36, b=out37, out=out41);
+      Or(a=out38, b=out39, out=out42);
+      Or(a=out40, b=out41, out=out43);
+      Or(a=out42, b=out43, out=out44);
+	
+	And(a=instruction[15], b=out44, out=out45);
+	PC(in=out6, load=out45, inc=true, reset=reset, out[0..14]=pc);
+}	
+
+
+
+
+
+
+
+
