@@ -6,35 +6,35 @@
 
 ### Assignments  
 -  → [**Assignment 1**](https://github.com/neriabd/Nand2Tetris/tree/main/project1)
-<br> Detect scene cuts in video.
+<br> HDL Chips Implementation.
 <br><br>
 -  → [**Assignment 2**](https://github.com/neriabd/Nand2Tetris/tree/main/project2)
-<br> Audio denoising an audio file.
+<br> HDL ALU Implementation.
 <br><br>
 -  → [**Assignment 3**](https://github.com/neriabd/Nand2Tetris/tree/main/project3)
-<br> Image blending and crafting hybrid images.
+<br> HDL PC & RAM Implementation.
 <br><br>
 -  → [**Assignment 4**](https://github.com/neriabd/Nand2Tetris/tree/main/project4)
-<br> Blend between a low-resolution image and a high-resolution using homography.
+<br> Assembly Programs.
 <br><br>
 -  → [**Assignment 5**](https://github.com/neriabd/Nand2Tetris/tree/main/project5)
-<br> Blend between a low-resolution image and a high-resolution using homography.
+<br> HDL CPU & Memory Implementation.
 <br><br>
 -  → [**Assignment 6**](https://github.com/neriabd/Nand2Tetris/tree/main/project6)
-<br> Blend between a low-resolution image and a high-resolution using homography.
+<br> Compiler Assembly to Binary.
 <br><br>
 -  → [**Assignment 7**](https://github.com/neriabd/Nand2Tetris/tree/main/project7)
-<br> Blend between a low-resolution image and a high-resolution using homography.
+<br> Compiler VM to Assembly Part 1.
 <br><br>
 -  → [**Assignment 8**](https://github.com/neriabd/Nand2Tetris/tree/main/project8)
-<br> Blend between a low-resolution image and a high-resolution using homography.
+<br> Compiler VM to Assembly Part 1.
 <br><br>
 -  → [**Assignment 10**](https://github.com/neriabd/Nand2Tetris/tree/main/project10)
-<br> Blend between a low-resolution image and a high-resolution using homography.
+<br> Compile Jack to XML tokens.
 <br><br>
 -  → [**Assignment 11**](https://github.com/neriabd/Nand2Tetris/tree/main/project11)
-<br> Blend between a low-resolution image and a high-resolution using homography.
+<br> Compiler Jack to VM.
 <br><br>
 -  → [**Assignment 12**](https://github.com/neriabd/Nand2Tetris/tree/main/project12)
-<br> Blend between a low-resolution image and a high-resolution using homography.
+<br> Implementation of an OS library - Written in Jack.
 <br><br> 
