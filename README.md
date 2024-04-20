@@ -6,7 +6,7 @@
 
 ### Assignments  
 -  → [**Assignment 1**](https://github.com/neriabd/Nand2Tetris/tree/main/project1)
-<br> HDL Chips Implementation.
+<br> HDL Basic Chips Implementation.
 <br><br>
 -  → [**Assignment 2**](https://github.com/neriabd/Nand2Tetris/tree/main/project2)
 <br> HDL ALU Implementation.
