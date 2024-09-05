@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://shnaton.huji.ac.il/index.php/NewSyl/67925/2/2022/">
-    <img src="https://github.com/neriabd/neriabd/blob/main/logos/Nand2Tetris.png" alt="Nand Icon">
+    <img src="https://github.com/neriabd/neriabd/blob/main/logos/Nand2TetrisNewLogo.png" alt="Nand Icon">
   </a>
 </p>
 
